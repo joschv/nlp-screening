@@ -52,20 +52,25 @@ def semantic_search(query: str, texts: list[str]) -> list[tuple[float, str]]:
     return [(float(score), text) for text, score in text_score_pairs]
 
 
-def semantic_filter_top_k(query: str, texts: list[str], k: int = 1) -> list[tuple[float, str]]:
+def semantic_filter(query: str, texts: list[str], top_k: int = 3, min_relevance: float = 0.) -> list[tuple[float, str]]:
     print(f'>> {query}')
     semantic_scores = semantic_search(query, texts)
-    top_scores = filter_top_k(scores=semantic_scores, k=k)
+
+    top_scores = filter_top_k(
+        scores=semantic_scores,
+        k=top_k
+    )
+
+    top_scores = filter_by_score(
+        semantic_scores=top_scores,
+        threshold=min_relevance
+    )
+
     print(f'  {top_scores}')
     return top_scores
 
 def filter_top_k(scores: list[tuple[float, str]], k: int = 3) -> list[tuple[float, str]]:
     return scores[:min(len(scores), k)]
-
-
-def semantic_filter_threshold(query: str, texts: list[str], threshold: float) -> list[tuple[float, str]]:
-    semantic_scores = semantic_search(query, texts)
-    return filter_by_score(semantic_scores, threshold)
 
 def filter_by_score(semantic_scores: list[tuple[float, str]], threshold: float) -> list[tuple[float, str]]:
     # find index of last score >= threshold (requires sorted scores)

@@ -1,3 +1,5 @@
+import math
+
 from sentence_transformers import CrossEncoder
 from transformers import pipeline
 
@@ -9,8 +11,26 @@ def classify(text: str, candidate_labels: list[str] = ("computer vision", "text 
     res = classifier(text, candidate_labels)
     return res
 
-def predict(text: str, tech: str):
-    assumption = f'{tech}'
+def classify_yes_no(text: str, positive: str, negative: str) -> tuple[bool, float]:
+    # classify between two candidates, giving a confidence score for the decision
+    topic_result = classify(
+        text=text,
+        candidate_labels=[positive, negative]
+    )
+    topic_result.pop('sequence')
+    print(topic_result)
+
+    labels = topic_result.get('labels')
+    scores = topic_result.get('scores')
+
+    result = labels[0] == positive
+    confidence = math.sin(max(min((abs(scores[0]) - 0.5), 0.4), 0.1) * math.pi)
+
+    print(f'y/n classification: {result}, {confidence}')
+    return result, confidence
+
+def predict(text: str, assumption: str):
+    # does not seem to be quite effective without fine-tuning onto machine learning vocab
     scores = model.predict([(assumption, text)])
 
     # convert scores to labels
@@ -20,6 +40,8 @@ def predict(text: str, tech: str):
     # print(scores)
     prediction = labels[0]
 
-    print(f'>> Predict:\n{labels[0]} < {assumption} & {text}')
-
+    print(f'>> Predict:\n{prediction} < {assumption} & {text}')
     return prediction
+
+def predict_tech(text: str, tech: str):
+    return predict(text, f'In this study the method includes the usage of {tech}.')

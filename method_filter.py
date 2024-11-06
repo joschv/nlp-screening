@@ -1,18 +1,13 @@
-from cross_encoding import classify
+from cross_encoding import classify_yes_no
 
 
-def includes_deep_learning_tech(text: str) -> bool:
+def includes_deep_learning_tech(text: str) -> tuple[bool, float]:
     positive = 'uses deep learning'
     negative = 'does not use deep learning'
 
-    classification_result = classify(
+    topic_result = classify_yes_no(
         text=text,
-        candidate_labels=[positive, negative]
+        positive=positive,
+        negative=negative
     )
-    classification_result.pop('sequence')
-    print(classification_result)
-
-    labels = classification_result.get('labels')
-    if labels[0] == negative:
-        return False
-    return True
+    return topic_result
