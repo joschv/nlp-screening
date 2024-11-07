@@ -17,6 +17,9 @@ Filtering papers by their abstract information about usage of deep learning tech
   - 
 - Semantic similarity
 
+- Data handling and batching
+  - using the huggingface dataset library and batching could speed up the calculation and potentially reduce memory usage which would greatly benefit especially smaller machines as noted in the task but increase installation burden (decide later)
+
 ### Why not keyworld-based?
 
 - prone to deception, the following examples could be falsely assumed to use deep learning techniques:
