@@ -3,8 +3,11 @@ from enum import Enum
 
 
 class ConfidenceMethod(Enum):
+    LIN = 0
     EXP = 1
     SIN = 2
+    LOG = 3
+    # variance?
 
 
 def confidence_score(normalized_overscore: float, confidence_method: ConfidenceMethod = ConfidenceMethod.SIN) -> float:
@@ -13,8 +16,17 @@ def confidence_score(normalized_overscore: float, confidence_method: ConfidenceM
         return ((normalized_overscore + 1) ** 2.0 - 1) / 3
     elif confidence_method == ConfidenceMethod.SIN:
         return math.sin(normalized_overscore * 0.5 * math.pi)
+    elif confidence_method == ConfidenceMethod.LOG:
+        if normalized_overscore == 0.0:
+            return 0.0
+        return max(0.0, math.log10(normalized_overscore * 100) / 2)
     else:
+        # linear
         return normalized_overscore
+
+
+def normalize_overscore(score: float, n: int) -> float:
+    return (score - (1/n)) / ((n-1)/n)
 
 
 def test():

@@ -1,9 +1,7 @@
-import math
-
 from sentence_transformers import CrossEncoder
 from transformers import pipeline
 
-from confidence_score import confidence_score
+from confidence_score import confidence_score, normalize_overscore
 
 model = CrossEncoder('cross-encoder/nli-MiniLM2-L6-H768')
 classifier = pipeline("zero-shot-classification", model='cross-encoder/nli-MiniLM2-L6-H768')
@@ -29,8 +27,7 @@ def classify_yes_no(text: str, positive: str, negative: str) -> tuple[bool, floa
     score = scores[0]
     print(scores, score, positive, negative, result)
 
-    normalized_overscore = (score - 0.5) * 2  # normalized
-    confidence = confidence_score(normalized_overscore)
+    confidence = confidence_score(normalize_overscore(score, 2))
 
     print(f'y/n classification: {result}, {confidence:.2%}')
     return result, confidence
