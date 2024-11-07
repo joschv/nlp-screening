@@ -11,5 +11,14 @@ def import_collection(fp: str | PathLike) -> list[dict]:
     return rows
 
 
+def export_collection(fp: str | PathLike, data: list[dict]) -> None:
+    with open(fp, "w+", newline='', encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=data[0].keys())
+
+        writer.writeheader()
+        for row in data:
+            writer.writerow(rowdict=row)
+
+
 if __name__ == '__main__':
     r = import_collection("collection_with_abstracts.csv")
