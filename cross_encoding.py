@@ -3,12 +3,14 @@ from transformers import pipeline
 
 from confidence_score import confidence_score, normalize_overscore
 
-model = CrossEncoder('cross-encoder/nli-MiniLM2-L6-H768')
-classifier = pipeline("zero-shot-classification", model='cross-encoder/nli-MiniLM2-L6-H768')
+cross_encoder_model = CrossEncoder('cross-encoder/nli-MiniLM2-L6-H768')
+zero_shot_classifier = pipeline("zero-shot-classification", model='cross-encoder/nli-MiniLM2-L6-H768')
 
 def classify(text: str, candidate_labels: list[str] = ("computer vision", "text mining", "deep learning", "no deep learning")) -> dict:
-    res = classifier(text, candidate_labels)
-    return res
+    return zero_shot_classifier(text, candidate_labels)
+
+def classify_batched(texts: list[str], candidate_labels: list[str]):
+    return zero_shot_classifier(texts, candidate_labels)
 
 def classify_yes_no(text: str, positive: str, negative: str) -> tuple[bool, float]:
     # classify between two candidates, giving a confidence score for the decision
@@ -32,9 +34,16 @@ def classify_yes_no(text: str, positive: str, negative: str) -> tuple[bool, floa
     print(f'y/n classification: {result}, {confidence:.2%}')
     return result, confidence
 
+def classify_yes_no_batched(texts_batch: list[str], positive: str, negative: str):
+    topic_results = classify_batched(
+        texts=texts_batch,
+        candidate_labels=[positive, negative]
+    )
+    print(topic_results)
+
 def predict(text: str, assumption: str):
     # does not seem to be quite effective without fine-tuning onto machine learning vocab
-    scores = model.predict([(assumption, text)])
+    scores = cross_encoder_model.predict([(assumption, text)])
 
     # convert scores to labels
     label_mapping = ['contradiction', 'entailment', 'neutral']
