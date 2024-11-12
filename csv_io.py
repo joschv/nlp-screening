@@ -21,4 +21,4 @@ def export_collection(fp: str | PathLike, data: list[dict]) -> None:
 
 
 if __name__ == '__main__':
-    r = import_collection("collection_with_abstracts.csv")
+    r = import_collection("data/collection_with_abstracts.csv")

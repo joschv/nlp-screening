@@ -7,7 +7,7 @@ from method_filter import includes_deep_learning_tech
 from semantic_search import semantic_filter
 from topic_filter import is_about_topics
 
-c = import_collection("collection_with_abstracts.csv")
+c = import_collection('data/collection_with_abstracts.csv')
 total_entries = len(c)
 print(f'Starting analysis of collection of {total_entries} entries..')
 

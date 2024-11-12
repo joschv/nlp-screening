@@ -3,17 +3,21 @@ from transformers import pipeline
 
 from confidence_score import confidence_score, normalize_overscore
 
-cross_encoder_model = CrossEncoder('cross-encoder/nli-MiniLM2-L6-H768')
-zero_shot_classifier = pipeline("zero-shot-classification", model='cross-encoder/nli-MiniLM2-L6-H768')
+model_checkpoint = 'cross-encoder/nli-MiniLM2-L6-H768'  # very small natural language inference model
+cross_encoder_model = CrossEncoder(model_checkpoint)
+zero_shot_classifier = pipeline("zero-shot-classification", model=model_checkpoint)
 
-def classify(text: str, candidate_labels: list[str] = ("computer vision", "text mining", "deep learning", "no deep learning")) -> dict:
+def classify(text: str, candidate_labels: list[str]) -> dict:
+    """ Zero-shot-classify the text for the candidates.
+        :returns: A dictionary containing all information regarding the classification including labels, scores etc.
+        """
     return zero_shot_classifier(text, candidate_labels)
 
-def classify_batched(texts: list[str], candidate_labels: list[str]):
-    return zero_shot_classifier(texts, candidate_labels)
-
 def classify_yes_no(text: str, positive: str, negative: str) -> tuple[bool, float]:
-    # classify between two candidates, giving a confidence score for the decision
+    """ Classify between two candidates, giving a confidence score for the decision.
+        :returns: True if positive candidate has higher score than negative candidate,
+            and a confidence score representing the confidence in choosing that label over the other.
+    """
     topic_result = classify(
         text=text,
         candidate_labels=[positive, negative]
@@ -34,15 +38,10 @@ def classify_yes_no(text: str, positive: str, negative: str) -> tuple[bool, floa
     print(f'y/n classification: {result}, {confidence:.2%}')
     return result, confidence
 
-def classify_yes_no_batched(texts_batch: list[str], positive: str, negative: str):
-    topic_results = classify_batched(
-        texts=texts_batch,
-        candidate_labels=[positive, negative]
-    )
-    print(topic_results)
-
-def predict(text: str, assumption: str):
+def predict(text: str, assumption: str) -> str:
+    """ Predict (entailment, neutral, contradiction) for assumption based on text. """
     # does not seem to be quite effective without fine-tuning onto machine learning vocab
+    # or requires more literal entailment
     scores = cross_encoder_model.predict([(assumption, text)])
 
     # convert scores to labels

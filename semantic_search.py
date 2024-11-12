@@ -1,3 +1,4 @@
+import nltk
 from transformers import AutoTokenizer, AutoModel
 import torch
 import torch.nn.functional as F
@@ -53,7 +54,7 @@ def semantic_search(query: str, texts: list[str]) -> list[tuple[float, str]]:
 
 
 def semantic_filter(query: str, texts: list[str], top_k: int = 3, min_relevance: float = 0.) -> list[tuple[float, str]]:
-    print(f'>> {query}')
+    # print(f'>> {query}')
     semantic_scores = semantic_search(query, texts)
 
     top_scores = filter_top_k(
@@ -66,7 +67,7 @@ def semantic_filter(query: str, texts: list[str], top_k: int = 3, min_relevance:
         threshold=min_relevance
     )
 
-    print(f'  {top_scores}')
+    # print(f'  {top_scores}')
     return top_scores
 
 def filter_top_k(scores: list[tuple[float, str]], k: int = 3) -> list[tuple[float, str]]:
@@ -99,3 +100,31 @@ if __name__ == '__main__':
     print(semantic_search(query, texts))
 
     test_filter_by_score()
+
+
+def ss_eqa(query: str, dict_key: str, top_k: int = 3, min_relevance: float = 0.2):
+
+    def pp(r):
+        titles = [t.lower() for t in r['Title']]
+        abstracts = [a.lower() if a is not None else '' for a in r['Abstract']]
+
+        texts = [a if a is not None and len(a) > 0 else t for a, t in zip(abstracts, titles)]
+
+        texts_phrases = [nltk.tokenize.sent_tokenize(t, language='english') for t in texts]
+
+        texts_combined_relevant_phrases = []
+        for phrases in texts_phrases:
+            semantic_scores = semantic_filter(
+                query=query,
+                texts=phrases,
+                top_k=top_k,
+                min_relevance=min_relevance
+            )
+            combined_phrases = ' '.join([phrase for (score, phrase) in semantic_scores])
+            texts_combined_relevant_phrases += [combined_phrases]
+
+        return {
+            dict_key: texts_combined_relevant_phrases
+        }
+
+    return pp
