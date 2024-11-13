@@ -4,12 +4,12 @@ DEBUG_DATASET_SIZE = 50  # if debug is True, a subset of the specified size is t
 BATCH_SIZE = 16  # size of the batches that are calculated together (see https://huggingface.co/docs/datasets/about_map_batch)
 out_path = f'./out'
 # DATASET MODIFICATION OPTIONS
-REMOVE_OFFTOPIC = False  # discard studies that are deemed to be off-topic (as soon as possible) speeds up computation
+REMOVE_OFFTOPIC = True  # discard studies that are deemed to be off-topic (as soon as possible) speeds up computation
 EXPORT_TOPIC_EDGE_CASES = True  # exports edge cases which are less clearly classifiable (for manual review)
-REMOVE_NON_DEEP_LEARNING = False  # discard studies that are deemed to not uses deep learning (asap) speeds up computation
+REMOVE_NON_DEEP_LEARNING = True  # discard studies that are deemed to not uses deep learning (asap) speeds up computation
 EXPORT_DEEP_LEARNING_EDGE_CASES = True  # exports edge cases which are less clearly classifiable (for manual review)
-WITH_CONFIDENCES = False  # include confidence scores (a representation of how confident a choice was made over others) in dataset exports
-WITH_CONTEXTS = False  # include context phrases scores in dataset exports (to support quicker manual review)
+WITH_CONFIDENCES = True  # include confidence scores (a representation of how confident a choice was made over others) in dataset exports
+WITH_CONTEXTS = True  # include context phrases scores in dataset exports (to support quicker manual review)
 # TOPIC FILTER OPTIONS
 TOPIC_FILTER_CONFIDENCE_THRESHOLD = 0.075  # set between 0 and 1, higher means more studies are filtered out only leaving clearly classifiable ones
 TOPIC_HEURISTICS_TITLE_KEYWORDS = ['covid']  # a list of keywords which, if contained in a study title, lets a study bypass the topic filter
