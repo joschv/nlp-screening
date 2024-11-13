@@ -15,7 +15,7 @@ from semantic_search import extractive_question_answering
 from topic_filter import topic_filter, topic_journal_heuristics
 
 # RUN CONFIG
-DEBUG = True
+DEBUG = False
 BATCH_SIZE = 16
 out_path = f'./out'
 # DATASET MODIFICATION OPTIONS
@@ -54,7 +54,7 @@ def run_screening():
     """
     # init
     logging.basicConfig(
-        filename='basic.log',
+        filename='main.log',
         encoding='utf-8',
         level=logging.INFO,
         filemode='w',
