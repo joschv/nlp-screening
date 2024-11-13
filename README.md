@@ -12,6 +12,14 @@ Developed using a Python 3.11 environment.
 
 Models are downloaded automatically from huggingface when the application requires them for the first time.
 
+## Run instructions
+
+0. Set source file path in main.py (only if a different source file should be used).
+1. Configure settings at the top of the config.py file.
+2. Run main.py
+3. After execution, review output files (in "out" subfolder - it is opened on completion).
+4. If adjustments are needed continue with Step 1 (for feedback loop, set DEBUG=True)
+
 ## Which NLP techniques have i used?
 
 - Extractive Question Answering
@@ -22,7 +30,8 @@ Models are downloaded automatically from huggingface when the application requir
   - using a small [Natural Language Inference Cross Encoder model](https://huggingface.co/cross-encoder/nli-MiniLM2-L6-H768)
   - to classify whether a study is about a topic or uses a method
 
-And supporting NLP techniques such as tokenization, sentence tokenization (nltk).
+And supporting NLP techniques such as tokenization, sentence tokenization (nltk). 
+Fine-tuning a BERT model for different GLUE tasks [was experimented with](https://github.com/joschv/nlp-screening/blob/finetuning/finetune_deberta.py) but was not gone for as the solution due to time constraints.
 
 
 ## Why not keyword-based?
@@ -36,7 +45,17 @@ And supporting NLP techniques such as tokenization, sentence tokenization (nltk)
   - embeddings of synonyms should be similar and therefore lead to similar classification results
 
 ## Resulting dataset statistics
-    
+
+The results using the default configuration (but without discarding disqualified studies immediately for complete info):
+[![Result statistics table](quick_stats.png)](https://docs.google.com/spreadsheets/d/18oMYjod0NT1aDrDnBfFb1OEUKeoBRm0VRzLrpEClVwE/edit?gid=0#gid=0)
+
+- 5932 of 11450 (52%) were classified as both on topic (Epidemiology/Virology) and using the specified method (Deep Learning).
+- Of the 5932 passing studies:
+  - 4168 (70%) were classified as using computer vision
+  - 196 (3%) as using text mining
+  - 967 (16%) as using both
+  - 601 (10%) as using neither computer vision nor text mining (but other deep learning methods)
+
 
 ### Extra notes
 #### Implementation choices explanation

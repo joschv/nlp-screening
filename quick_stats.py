@@ -21,9 +21,9 @@ passing_studies = {
 print(passing_studies)
 
 method_counts = {
-    'computer vision': (df['deep_learning_method'] == 'computer vision').sum(),
-    'text mining': (df['deep_learning_method'] == 'text mining').sum(),
-    'both': (df['deep_learning_method'] == 'both').sum(),
-    'other': (df['deep_learning_method'] == 'other').sum()
+    'computer vision': (df_both['deep_learning_method'] == 'computer vision').sum(),
+    'text mining': (df_both['deep_learning_method'] == 'text mining').sum(),
+    'both': (df_both['deep_learning_method'] == 'both').sum(),
+    'other': (df_both['deep_learning_method'] == 'other').sum()
 }
 print(method_counts)
