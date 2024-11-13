@@ -1,4 +1,8 @@
 USES_DEEP_LEARNING = 'uses_deep_learning'
 USES_DEEP_LEARNING_CONFIDENCE = 'uses_deep_learning_confidence'
+USES_DEEP_LEARNING_CONTEXT = 'uses_deep_learning_context'
 IS_ON_TOPIC = 'is_about_epidemiology_or_virology'
 IS_ON_TOPIC_CONFIDENCE = 'is_about_epidemiology_or_virology_confidence'
+IS_ON_TOPIC_CONTEXT = 'is_about_epidemiology_or_virology_context'
+DEEP_LEARNING_METHOD_LABEL = 'deep_learning_method'
+DEEP_LEARNING_METHOD_LABEL_CONFIDENCE = 'deep_learning_method_confidence'

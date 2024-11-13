@@ -26,7 +26,7 @@ def topic_filter(topics: list[str]):
     negative = 'not about ' + ' and not about '.join(topics)
     candidate_labels = [positive, negative]
 
-    def ff(batch):
+    def pp(batch):
         abstracts = batch['Abstract']
         titles = batch['Title']
 
@@ -50,7 +50,7 @@ def topic_filter(topics: list[str]):
             IS_ON_TOPIC: results,
             IS_ON_TOPIC_CONFIDENCE: confidence_scores
         }
-    return ff
+    return pp
 
 
 def topic_journal_heuristics(title_kws: list[str], journal_kws: list[str]):
