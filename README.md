@@ -47,7 +47,13 @@ Fine-tuning a BERT model for different GLUE tasks [was experimented with](https:
 ## Resulting dataset statistics
 
 The results using the default configuration (but without discarding disqualified studies immediately for complete info):
-[![Result statistics table](quick_stats.png)](https://docs.google.com/spreadsheets/d/18oMYjod0NT1aDrDnBfFb1OEUKeoBRm0VRzLrpEClVwE/edit?gid=0#gid=0)
+
+| [NLP screening results](https://docs.google.com/spreadsheets/d/18oMYjod0NT1aDrDnBfFb1OEUKeoBRm0VRzLrpEClVwE/edit?gid=0#gid=0) |     |               | **Uses deep learning** |               |
+|:-----------------------------------------------------------------------------------------------------------------------------:|:---:|:-------------:|:----------------------:|:-------------:|
+|                                                                                                                               |     |      yes      |           no           |      sum      |
+|                                                                                                                               | yes | 5932 (51,81%) |      700 (6,11%)       | 6632 (57,92%) |
+|                                              **About Epidemiology or Virology**                                               | no  | 3424 (29,90%) |     1394 (12,17%)      | 4818 (42,08%) |
+|                                                                                                                               | sum | 9356 (81,71%) |     2094  (18,29%)     | 11450 (100%)  |
 
 - 5932 of 11450 (52%) were classified as both on topic (Epidemiology/Virology) and using the specified method (Deep Learning).
 - Of the 5932 passing studies:
