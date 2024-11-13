@@ -7,6 +7,11 @@ from pathlib import Path
 import nltk
 from datasets import load_dataset, concatenate_datasets, Dataset
 
+from config import DEBUG, DEBUG_DATASET_SIZE, BATCH_SIZE, out_path, REMOVE_OFFTOPIC, EXPORT_TOPIC_EDGE_CASES, \
+    REMOVE_NON_DEEP_LEARNING, EXPORT_DEEP_LEARNING_EDGE_CASES, WITH_CONFIDENCES, WITH_CONTEXTS, \
+    TOPIC_FILTER_CONFIDENCE_THRESHOLD, TOPIC_HEURISTICS_TITLE_KEYWORDS, TOPIC_HEURISTICS_JOURNAL_KEYWORDS, \
+    TOPIC_QUERY_BLUEPRINT, TOPICS_LABEL, TOPIC_FILTER_LABELS, USES_DL_CONFIDENCE_THRESHOLD, METHOD_QUERY_BLUEPRINT, \
+    METHOD_DEEP_LEARNING_QUERY, DEEP_LEARNING_METHOD, COMP_VISION_METHOD, TEXT_MINING_METHOD
 from cross_encoding import classify_deep_learning_method
 from dataset_definitions import IS_ON_TOPIC, IS_ON_TOPIC_CONFIDENCE, USES_DEEP_LEARNING, USES_DEEP_LEARNING_CONFIDENCE, \
     USES_DEEP_LEARNING_CONTEXT, IS_ON_TOPIC_CONTEXT, DEEP_LEARNING_METHOD_LABEL_CONFIDENCE
@@ -14,33 +19,8 @@ from method_filter import method_filter
 from semantic_search import extractive_question_answering
 from topic_filter import topic_filter, topic_journal_heuristics
 
-# RUN CONFIG
-DEBUG = False
-BATCH_SIZE = 16
-out_path = f'./out'
-# DATASET MODIFICATION OPTIONS
-REMOVE_OFFTOPIC = True
-EXPORT_TOPIC_EDGE_CASES = True
-REMOVE_NON_DEEP_LEARNING = True
-EXPORT_DEEP_LEARNING_EDGE_CASES = True
-WITH_CONFIDENCES = False
-WITH_CONTEXTS = False
-# TOPIC FILTER OPTIONS
-TOPIC_FILTER_CONFIDENCE_THRESHOLD = 0.075
-TOPIC_HEURISTICS_TITLE_KEYWORDS = ['covid']
-TOPIC_HEURISTICS_JOURNAL_KEYWORDS = ['virus', 'virology', 'epidemiology', 'epidemics']
-TOPIC_QUERY_BLUEPRINT = 'is the study about {}?'
-TOPICS_LABEL = 'virology, epidemiology, covid, covid-19'
-TOPIC_FILTER_LABELS = ['epidemiology', 'epidemics', 'pandemics', 'covid', 'virus', 'virology']
-# METHOD FILTER OPTIONS
-USES_DL_CONFIDENCE_THRESHOLD = 0.075
-METHOD_QUERY_BLUEPRINT = 'the method of the study does include the usage of {}?'
-METHOD_DEEP_LEARNING_QUERY = 'deep learning or ai models'
-DEEP_LEARNING_METHOD = 'deep-learning, multi-layer neural-nets or similar machine-learning-models'
-COMP_VISION_METHOD = 'computer-vision or image-classification or image-segmentation'
-TEXT_MINING_METHOD = 'text-mining'
 
-def run_screening():
+def run_screening(data_file: str):
     """
     Run NLP-screening on the given dataset.
     First heuristics are utilized to quickly qualify studies as on-topic (by keywords in Journal & Title)
@@ -69,12 +49,12 @@ def run_screening():
         mkdir(out_path)
 
     # import dataset
-    dataset = load_dataset('csv', data_files='data/collection_with_abstracts.csv')['train']
+    dataset = load_dataset('csv', data_files=data_file)['train']
 
     # for debugging purposes take a smaller subset
     if DEBUG:
         dataset = dataset.shuffle(seed=42)
-        dataset = dataset.take(250)
+        dataset = dataset.take(DEBUG_DATASET_SIZE)
         print('Debug subset:', dataset)
 
     total_num_of_studies = dataset.num_rows
@@ -167,11 +147,12 @@ def run_screening():
         batch_size=BATCH_SIZE
     )
 
-    # remove the studies that do not have any phrases that are relevant to the method query
-    dataset = dataset.filter(
-        lambda r: r[USES_DEEP_LEARNING_CONTEXT] != ''
-    )
-    info_msg('After removal of those without relevant phrases to deep learning method')
+    if REMOVE_NON_DEEP_LEARNING:
+        # remove the studies that do not have any phrases that are relevant to the method query
+        dataset = dataset.filter(
+            lambda r: r[USES_DEEP_LEARNING_CONTEXT] != ''
+        )
+        info_msg('After removal of those without relevant phrases to deep learning method')
 
     # configure method filter
     deep_learning_filter_fn = method_filter(
@@ -235,4 +216,4 @@ def run_screening():
     startfile(Path(out_path))
 
 if __name__ == '__main__':
-    run_screening()
+    run_screening('data/collection_with_abstracts.csv')
